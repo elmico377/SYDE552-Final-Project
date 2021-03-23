@@ -26,7 +26,5 @@ def cnn_generate_t2(num_epochs, x_train, y_train, x_test, y_test):
     return model
 
 def get_scentroid_data_formatted(padded_time_series, sample_rate):
-    # hop_length = 512
-    # chromagram = librosa.feature.chroma_stft(padded_time_series, sr=sample_rate, hop_length=hop_length) # Test with stft normal
     scentroid_data = librosa.feature.spectral_centroid(padded_time_series, sr=sample_rate)[0]
     return scentroid_data
