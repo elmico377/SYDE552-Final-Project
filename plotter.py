@@ -22,12 +22,12 @@ def plot_model(model,current_title):
     plt.tight_layout()
     plt.show()
 
-def plot_models(models):
+def plot_models(models,current_title):
     plt.figure(figsize=(12,5))
     plt.subplot(1, 2, 1)
     for model in models:
         plt.plot(model.history.history['accuracy'], c='k') 
-    plt.ylabel('training accuracy')
+    plt.ylabel(current_title + ' training accuracy')
     plt.xlabel('epochs')   
     plt.twinx()
     for model in models:
@@ -38,7 +38,7 @@ def plot_models(models):
     plt.subplot(1, 2, 2)
     for model in models:
         plt.plot(model.history.history['val_accuracy'], c='k')
-    plt.ylabel('testing accuracy')
+    plt.ylabel(current_title + ' testing accuracy')
     plt.xlabel('epochs')
     plt.twinx()
     for model in models:

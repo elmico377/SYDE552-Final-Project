@@ -4,7 +4,6 @@ import librosa
 
 def cnn_generate_t1(num_epochs, x_train, y_train, x_test, y_test):
     input_shape = x_train.shape[1:]
-    print(input_shape)
     model = tf.keras.models.Sequential([
         tf.keras.layers.Input(shape=input_shape),
         # tf.keras.layers.experimental.preprocessing.Resizing(12,30), # TODO: Play with resize layer change dimensions and interpolation style (bilinear trilinear)
