@@ -8,7 +8,7 @@ def cnn_generate_t4(num_epochs, x_train, y_train, x_test, y_test):
     model = tf.keras.models.Sequential([
         tf.keras.layers.Input(shape=input_shape),
         # tf.keras.layers.experimental.preprocessing.Resizing(12,30), # TODO: Play with resize layer change dimensions and interpolation style (bilinear trilinear)
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
+        tf.keras.layers.Conv2D(64, 3, activation='relu'),
         tf.keras.layers.Conv2D(64, 3, activation='relu'),
         tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Dropout(0.2),

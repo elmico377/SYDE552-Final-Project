@@ -51,11 +51,8 @@ MAX_SIZE = 30000
 # Interactive mode to allow multiple graphs
 plt.ion()
 
-# current_approach = "chromagram"
-# current_approach = "stft"
-# current_approach = "scentroid"
-# current_approach = "mel"
-approach_list = ["chromagram"]#,"stft","scentroid","mel"]
+approach_list = ["stft"]#["chromagram","stft","scentroid","mel"]
+store_f1_scores = []
 for current_approach in approach_list:
     x_train_data = []
     y_train_labels = []
@@ -65,7 +62,7 @@ for current_approach in approach_list:
 
     x_validation_data = []
     y_validation_labels = []
-    
+
     for i, current_audio_file in enumerate(file_names):
         time_series, sample_rate = librosa.load(current_audio_file) # sr changes sample rate in the load command
         if MAX_SIZE - time_series.shape[0] < 0:
@@ -84,13 +81,11 @@ for current_approach in approach_list:
         else: #elif current_approach == "chromagram":
             current_formatted_data = get_chroma_data_formatted(padded_time_series, sample_rate) # Test with stft normal
 
-        # print(current_formatted_data.shape)
-
         # Label is 1 for michael and 0 for other
         label = 0
         current_filename_chunks = current_audio_file.split('\\')
         current_filename = current_filename_chunks[len(current_filename_chunks)-1]
-        if current_filename[0] == 'm':
+        if current_filename[0] == 'm': # None of the non-michael audio files start with "m"
             label = 1
 
         if i < len(file_names)/10.0: # First 10% is test data
@@ -99,9 +94,10 @@ for current_approach in approach_list:
         elif i < len(file_names)/5.0: # Second 10% is validation data  
             x_validation_data.append(current_formatted_data)
             y_validation_labels.append(label)
-        else: # Remaining data is test data
+        else: # Remaining data is training data
             x_train_data.append(current_formatted_data)
             y_train_labels.append(label)
+
     if current_approach == "scentroid":
         x_train_data = np.expand_dims(np.array(x_train_data),2)
         y_train_labels = np.array(y_train_labels)
@@ -141,11 +137,11 @@ for current_approach in approach_list:
         if current_approach == "stft":
             model = cnn_generate_t1(8, x_train_data, y_train_labels, x_test_data, y_test_labels)
         elif current_approach == "scentroid":
-            model = cnn_generate_t2(6, x_train_data, y_train_labels, x_test_data, y_test_labels)
+            model = cnn_generate_t2(8, x_train_data, y_train_labels, x_test_data, y_test_labels)
         elif current_approach == "mel":
-            model = cnn_generate_t3(10, x_train_data, y_train_labels, x_test_data, y_test_labels)
+            model = cnn_generate_t3(14, x_train_data, y_train_labels, x_test_data, y_test_labels)
         else: #elif current_approach == "chromagram":
-            model = cnn_generate_t4(8, x_train_data, y_train_labels, x_test_data, y_test_labels)
+            model = cnn_generate_t4(12, x_train_data, y_train_labels, x_test_data, y_test_labels)
 
         plt.subplot(1, 2, 1)
         plt.plot(model.history.history['accuracy'], c='k')
@@ -159,7 +155,10 @@ for current_approach in approach_list:
         f_1_scores.append(f_1_score)
         i += 1
 
-    print(f_1_scores)
+    # print(f_1_scores)
+    store_f1_scores.append(f_1_scores)
     # score = model.evaluate(x_validation_data, y_validation_labels)
+
+print(store_f1_scores)
 
 input("Press enter to finish")
